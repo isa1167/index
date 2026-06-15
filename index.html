@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚚 Dashboard Logístico - Monitoramento de Entregas</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>🚚 LogiTrack</h2>
+                <p>Sistema de Monitoramento</p>
+            </div>
+            <nav class="menu">
+                <a href="#" class="menu-item active">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="icon">📦</span>
+                    <span>Entregas</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="icon">🚛</span>
+                    <span>Transportadoras</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="icon">📍</span>
+                    <span>Regiões</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="icon">⚙️</span>
+                    <span>Configurações</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <h1>Monitoramento Logístico em Tempo Real</h1>
+                    <p class="timestamp">Última atualização: <span id="timestamp"></span></p>
+                </div>
+                <div class="user-info">
+                    <span>👤 Gestor Logístico</span>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content">
+                <!-- KPIs Section -->
+                <section class="kpis-section">
+                    <h2>Indicadores de Desempenho</h2>
+                    <div class="kpis-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <h3>Total de Entregas</h3>
+                                <span class="kpi-icon">📦</span>
+                            </div>
+                            <div class="kpi-value" id="totalEntregas">0</div>
+                            <div class="kpi-change">+12% vs. semana anterior</div>
+                        </div>
+
+                        <div class="kpi-card warning">
+                            <div class="kpi-header">
+                                <h3>Entregas Atrasadas</h3>
+                                <span class="kpi-icon">⏰</span>
+                            </div>
+                            <div class="kpi-value" id="entregasAtrasadas">0</div>
+                            <div class="kpi-change alert">⚠️ Acima do esperado</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <h3>Taxa de Atraso</h3>
+                                <span class="kpi-icon">📈</span>
+                            </div>
+                            <div class="kpi-value" id="taxaAtraso">0%</div>
+                            <div class="kpi-change">Meta: &lt;5%</div>
+                        </div>
+
+                        <div class="kpi-card info">
+                            <div class="kpi-header">
+                                <h3>Dias Acumulados</h3>
+                                <span class="kpi-icon">⏳</span>
+                            </div>
+                            <div class="kpi-value" id="diasAcumulados">0</div>
+                            <div class="kpi-change">dias de atraso total</div>
+                        </div>
+
+                        <div class="kpi-card danger">
+                            <div class="kpi-header">
+                                <h3>Maior Atraso</h3>
+                                <span class="kpi-icon">🔴</span>
+                            </div>
+                            <div class="kpi-value" id="maiorAtraso">0</div>
+                            <div class="kpi-change">dias</div>
+                        </div>
+
+                        <div class="kpi-card success">
+                            <div class="kpi-header">
+                                <h3>Entregas no Prazo</h3>
+                                <span class="kpi-icon">✅</span>
+                            </div>
+                            <div class="kpi-value" id="entregasNoPrazo">0</div>
+                            <div class="kpi-change">entregas dentro do prazo</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Filters Section -->
+                <section class="filters-section">
+                    <h2>Filtros Interativos</h2>
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="filterRegion">📍 Região</label>
+                            <select id="filterRegion">
+                                <option value="">Todas as Regiões</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filterTransportadora">🚛 Transportadora</label>
+                            <select id="filterTransportadora">
+                                <option value="">Todas as Transportadoras</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filterStatus">📊 Status</label>
+                            <select id="filterStatus">
+                                <option value="">Todos os Status</option>
+                                <option value="entregue">✅ Entregue</option>
+                                <option value="atrasada">⏰ Atrasada</option>
+                                <option value="em_transito">🚛 Em Trânsito</option>
+                                <option value="preparando">📦 Preparando</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <button class="btn-reset" id="resetFilters">Limpar Filtros</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts Section -->
+                <section class="charts-section">
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>Atrasos por Transportadora</h3>
+                            <canvas id="chartTransportadora"></canvas>
+                        </div>
+
+                        <div class="chart-card">
+                            <h3>Atrasos por Região</h3>
+                            <canvas id="chartRegiao"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Critical Deliveries Section -->
+                <section class="critical-section">
+                    <h2>🔴 Entregas Críticas - Requerem Atenção Imediata</h2>
+                    <div class="critical-table-container">
+                        <table class="critical-table">
+                            <thead>
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Transportadora</th>
+                                    <th>Região</th>
+                                    <th>Dias de Atraso</th>
+                                    <th>Status</th>
+                                    <th>Prioridade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="criticalTableBody">
+                                <!-- Preenchido dinamicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Analysis Section -->
+                <section class="analysis-section">
+                    <h2>📊 Análise Automática dos Resultados</h2>
+                    <div class="analysis-grid">
+                        <div class="analysis-card">
+                            <h3>🚛 Transportadoras com Mais Atrasos</h3>
+                            <div id="analysisTransportadora" class="analysis-content">
+                                <!-- Preenchido dinamicamente -->
+                            </div>
+                        </div>
+
+                        <div class="analysis-card">
+                            <h3>📍 Regiões Críticas</h3>
+                            <div id="analysisRegiao" class="analysis-content">
+                                <!-- Preenchido dinamicamente -->
+                            </div>
+                        </div>
+
+                        <div class="analysis-card">
+                            <h3>⚡ Recomendações</h3>
+                            <div id="analysisRecomendacoes" class="analysis-content">
+                                <!-- Preenchido dinamicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Performance Comparison -->
+                <section class="comparison-section">
+                    <h2>Comparativo de Desempenho</h2>
+                    <div class="chart-card">
+                        <canvas id="chartComparativo"></canvas>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <p>Dashboard Logístico © 2024 | Sistema de Monitoramento em Tempo Real | Dados atualizados automaticamente</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
